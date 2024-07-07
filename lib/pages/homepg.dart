@@ -79,6 +79,17 @@ class _HomePg extends State<HomePg> {
     } catch (error) {
       talker.log("statuses not initiated");
     }
+    try {
+      final timesActivation = widget.box.get("timesActivation");
+      if (timesActivation != null) {
+        setState(() {
+          timesActivationCount = timesActivation;
+        });
+        talker.log(widget.box.get("timesActivation"));
+      }
+    } catch (error) {
+      talker.log("timesActivation not initiated");
+    }
   }
 
   void HivePutAction() {
@@ -87,6 +98,7 @@ class _HomePg extends State<HomePg> {
     widget.box.put("minutes", minutesCount);
     widget.box.put("indexes", indexesCount);
     widget.box.put("statuses", statusesCount);
+    widget.box.put("timesActivation", timesActivationCount);
   }
 
   int currentPageIndex = 0;
@@ -96,18 +108,21 @@ class _HomePg extends State<HomePg> {
   List<String> minutesCount = [];
   List<String> indexesCount = [];
   List<String> statusesCount = [];
-
+  List<DateTime> timesActivationCount = [];
   TextEditingController title = TextEditingController();
   TextEditingController hours = TextEditingController();
   TextEditingController minutes = TextEditingController();
+  TextEditingController hoursActivation = TextEditingController();
+  TextEditingController minutesActivation = TextEditingController();
   bool homepgDialogTitleFieldFilled = false;
   bool homepgDialogHoursFieldFilled = true;
   bool homepgDialogMinutesFieldFilled = false;
+  bool isDailyCheckBoxValue = false;
+
   final talker = TalkerFlutter.init();
 
   @override
   Widget build(BuildContext context) {
-    // takeBoxData();
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -138,7 +153,7 @@ class _HomePg extends State<HomePg> {
           appBar: AppBar(
             elevation: 0,
             scrolledUnderElevation: 0,
-            title: Text("Home"),
+            title: const Text("Home"),
             centerTitle: true,
           ),
           body: Material(
@@ -163,10 +178,10 @@ class _HomePg extends State<HomePg> {
                   context: context,
                   builder: (BuildContext context) => Dialog(
                         child: Container(
-                          height: 300,
-                          width: 150,
+                          height: 400,
+                          width: 200,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Center(
                               child: Column(
                                 mainAxisAlignment:
@@ -180,25 +195,139 @@ class _HomePg extends State<HomePg> {
                                                 BorderRadius.circular(30)),
                                         hintText: "Title"),
                                   ),
-                                  Column(
+                                  const Text("Timer"),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      TextFormField(
-                                        controller: hours,
-                                        keyboardType:
-                                            TextInputType.numberWithOptions(),
-                                        inputFormatters: <TextInputFormatter>[
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
+                                      Container(
+                                        width: 80,
+                                        child: TextFormField(
+                                          decoration: const InputDecoration(
+                                            hintText: "Hours",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15),
+                                              ),
+                                            ),
+                                          ),
+                                          controller: hours,
+                                          keyboardType: const TextInputType
+                                              .numberWithOptions(),
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly
+                                          ],
+                                        ),
                                       ),
-                                      Text("Hours"),
-                                      TextFormField(
-                                        controller: minutes,
-                                        keyboardType: TextInputType.datetime,
-                                        inputFormatters: <TextInputFormatter>[
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
+                                      const SizedBox(
+                                        width: 10,
                                       ),
-                                      Text("Min"),
+                                      const Text(
+                                        ":",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 40,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        width: 80,
+                                        child: TextFormField(
+                                          decoration: const InputDecoration(
+                                            hintText: "Mins",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15),
+                                              ),
+                                            ),
+                                          ),
+                                          controller: minutes,
+                                          keyboardType: TextInputType.datetime,
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Text("Time of activation"),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        child: TextFormField(
+                                          decoration: const InputDecoration(
+                                            hintText: "Hours",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15),
+                                              ),
+                                            ),
+                                          ),
+                                          controller: hoursActivation,
+                                          keyboardType: const TextInputType
+                                              .numberWithOptions(),
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      const Text(
+                                        ":",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 40,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        width: 80,
+                                        child: TextFormField(
+                                          decoration: const InputDecoration(
+                                            hintText: "Mins",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15),
+                                              ),
+                                            ),
+                                          ),
+                                          controller: minutesActivation,
+                                          keyboardType: TextInputType.datetime,
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      StatefulBuilder(
+                                        builder:
+                                            (context, StateSetter setState) {
+                                          return Checkbox(
+                                            value: isDailyCheckBoxValue,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                isDailyCheckBoxValue = value!;
+                                              });
+                                            },
+                                          );
+                                        },
+                                      ),
+                                      const Text("daily"),
                                     ],
                                   ),
                                   Padding(
@@ -321,7 +450,11 @@ class _HomePg extends State<HomePg> {
                                               Navigator.pop(context);
                                             }
                                           },
-                                          child: Text("Create")),
+                                          child: const Text(
+                                            "Create",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          )),
                                     ),
                                   )
                                 ],
@@ -331,7 +464,7 @@ class _HomePg extends State<HomePg> {
                         ),
                       ));
             },
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         ),
