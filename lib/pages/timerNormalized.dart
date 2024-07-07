@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:time_manage/pages/homepg.dart';
 
@@ -13,11 +14,13 @@ class TimerPage extends StatefulWidget {
     required this.hours,
     required this.minutes,
     required this.title,
+    required this.box,
   });
   final String status;
   final String hours;
   final String minutes;
   final String title;
+  final Box<dynamic> box;
 
   @override
   State<TimerPage> createState() => _TimerPageState();
@@ -52,7 +55,9 @@ class _TimerPageState extends State<TimerPage> {
       timer?.cancel();
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => HomePg(),
+          builder: (context) => HomePg(
+            box: widget.box,
+          ),
         ),
         (Route<dynamic> route) => false,
       );
@@ -141,7 +146,9 @@ class _TimerPageState extends State<TimerPage> {
                                     });
                                     Navigator.of(context).pushAndRemoveUntil(
                                       MaterialPageRoute(
-                                        builder: (context) => HomePg(),
+                                        builder: (context) => HomePg(
+                                          box: widget.box,
+                                        ),
                                       ),
                                       (Route<dynamic> route) => false,
                                     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:time_manage/pages/timerNormalized.dart';
 
 class HomePgListItem extends StatelessWidget {
@@ -8,13 +9,14 @@ class HomePgListItem extends StatelessWidget {
     required this.hours,
     required this.minutes,
     this.function,
-    required this.status,
+    required this.status, required this.box,
   });
   final String title;
   final String hours;
   final String minutes;
   final VoidCallback? function;
   final String status;
+  final Box<dynamic> box;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,7 @@ class HomePgListItem extends StatelessWidget {
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                               builder: (context) => TimerPage(
+                                box: box,
                                 title: title,
                                 hours: hours,
                                 minutes: minutes,

@@ -1,66 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:time_manage/custom_widgets/homepgListItem.dart';
 
 class HomePg extends StatefulWidget {
   const HomePg({
     super.key,
+    required this.box,
   });
+  final Box<dynamic> box;
 
   @override
   State<HomePg> createState() => _HomePg();
 }
 
 class _HomePg extends State<HomePg> {
-  // void takeBoxData() {
-  //   final titles = widget.MainBox.get("titles");
-  //   final hours = widget.MainBox.get("hours");
-  //   final minutes = widget.MainBox.get("minutes");
-  //   final indexes = widget.MainBox.get("index");
-  //   final statuses = widget.MainBox.get("statuses");
-  //   if (titles != null) {
-  //     setState(() {
-  //       titlesCount = titles;
-  //     });
-  //   }
-  //   if (hours != null) {
-  //     setState(() {
-  //       hoursCount = titles;
-  //     });
-  //   }
-  //   if (minutes != null) {
-  //     setState(() {
-  //       minutesCount = titles;
-  //     });
-  //   }
-  //   if (indexes != null) {
-  //     setState(() {
-  //       indexCount = titles;
-  //     });
-  //   }
-  //   if (statuses != null) {
-  //     setState(() {
-  //       statusesCount = titles;
-  //     });
-  //   }
-  // }
+  @override
+  void initState() {
+    super.initState();
+    takeBoxData();
+  }
 
-  // void HivePutAction() {
-  //   widget.MainBox.put("titles", titlesCount);
-  //   widget.MainBox.put("hours", hoursCount);
-  //   widget.MainBox.put("minutes", minutesCount);
-  //   widget.MainBox.put("index", indexCount);
-  //   widget.MainBox.put("statuses", statusesCount);
-  // }
+  void takeBoxData() {
+    try {
+      final titles = widget.box.get("titles");
+      if (titles != null) {
+        setState(() {
+          titlesCount = titles;
+        });
+        talker.log(widget.box.get("titles"));
+      }
+    } catch (error) {
+      talker.log("titles not initiated");
+    }
+    try {
+      final hours = widget.box.get("hours");
+      if (hours != null) {
+        setState(() {
+          hoursCount = hours;
+        });
+        talker.log(widget.box.get("hours"));
+      }
+    } catch (error) {
+      talker.log("hours not initiated");
+    }
+    try {
+      final minutes = widget.box.get("minutes");
+      if (minutes != null) {
+        setState(() {
+          minutesCount = minutes;
+        });
+        talker.log(widget.box.get("minutes"));
+      }
+    } catch (error) {
+      talker.log("minutes not initiated");
+    }
+    try {
+      final indexes = widget.box.get("indexes");
+      if (indexes != null) {
+        setState(() {
+          indexesCount = indexes;
+        });
+        talker.log(widget.box.get("indexes"));
+      }
+    } catch (error) {
+      talker.log("indexes not initiated");
+    }
+    try {
+      final statuses = widget.box.get("statuses");
+      if (statuses != null) {
+        setState(() {
+          statusesCount = statuses;
+        });
+        talker.log(widget.box.get("statuses"));
+      }
+    } catch (error) {
+      talker.log("statuses not initiated");
+    }
+  }
+
+  void HivePutAction() {
+    widget.box.put("titles", titlesCount);
+    widget.box.put("hours", hoursCount);
+    widget.box.put("minutes", minutesCount);
+    widget.box.put("indexes", indexesCount);
+    widget.box.put("statuses", statusesCount);
+  }
 
   int currentPageIndex = 0;
   int tilesIndex = 0;
   List<String> titlesCount = [];
   List<String> hoursCount = [];
   List<String> minutesCount = [];
-  List<String> indexCount = [];
+  List<String> indexesCount = [];
   List<String> statusesCount = [];
 
   TextEditingController title = TextEditingController();
@@ -113,6 +147,7 @@ class _HomePg extends State<HomePg> {
                 itemCount: titlesCount.length,
                 itemBuilder: (BuildContext context, int index) {
                   return HomePgListItem(
+                    box: widget.box,
                     title: titlesCount[index],
                     hours: hoursCount[index],
                     minutes: minutesCount[index],
@@ -177,13 +212,15 @@ class _HomePg extends State<HomePg> {
                                               setState(() {
                                                 hours.text = "0";
                                               });
-                                              talker.log("hours space convert to 0");
+                                              talker.log(
+                                                  "hours space convert to 0");
                                             }
                                             if (minutes.text == "") {
                                               setState(() {
                                                 minutes.text = "0";
                                               });
-                                              talker.log("minutes space convert to 0");
+                                              talker.log(
+                                                  "minutes space convert to 0");
                                             }
                                             if (hours.text == "0" &&
                                                 minutes.text == "") {
@@ -195,7 +232,8 @@ class _HomePg extends State<HomePg> {
                                                 homepgDialogMinutesFieldFilled =
                                                     false;
                                               });
-                                              talker.log("minutes space convert to 0");
+                                              talker.log(
+                                                  "minutes space convert to 0");
                                             }
                                             if (title.text == "") {
                                               Fluttertoast.showToast(
@@ -267,14 +305,19 @@ class _HomePg extends State<HomePg> {
                                               titlesCount.add(title.text);
                                               hoursCount.add(hours.text);
                                               minutesCount.add(minutes.text);
-                                              indexCount.add(
+                                              indexesCount.add(
                                                   ((minutesCount.length) - 1)
                                                       .toString());
                                               statusesCount.add("0");
                                               title.text = "";
                                               hours.text = "";
                                               minutes.text = "";
-                                              // HivePutAction();
+                                              HivePutAction();
+                                              talker.log(
+                                                  ((widget.box.get("titles")) !=
+                                                          null)
+                                                      ? "succ"
+                                                      : "fail");
                                               Navigator.pop(context);
                                             }
                                           },

@@ -2,29 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:time_manage/pages/homepg.dart';
 
-void main() {
-  runApp(MainApp());
-  HiveSync();
-}
-
-void HiveSync() async {
+void main() async {
   await Hive.initFlutter();
+  var box = await Hive.openBox('main');
+  runApp(MainApp(
+    box: box,
+  ));
 }
 
-class MainApp extends StatefulWidget {
-  MainApp({super.key});
+class MainApp extends StatelessWidget {
+  MainApp({
+    super.key,
+    required this.box,
+  });
+  final Box<dynamic> box;
 
-  @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePg(
+        box: box,
       ),
     );
   }
