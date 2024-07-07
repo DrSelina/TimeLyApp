@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:time_manage/pages/timerMain.dart';
+import 'package:time_manage/pages/timerNormalized.dart';
 
 class HomePgListItem extends StatelessWidget {
   const HomePgListItem({
@@ -52,7 +51,7 @@ class HomePgListItem extends StatelessWidget {
                         onPressed: () {
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
-                              builder: (context) => TimerMain(
+                              builder: (context) => TimerPage(
                                 title: title,
                                 hours: hours,
                                 minutes: minutes,

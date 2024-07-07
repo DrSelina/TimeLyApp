@@ -29,7 +29,7 @@ class TimerMain extends StatefulWidget {
 
 class _TimerMainState extends State<TimerMain> {
   bool isDStopped = false;
-
+  bool isDPaused = false;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -37,7 +37,9 @@ class _TimerMainState extends State<TimerMain> {
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               SizedBox(
                 height: 100,
                 width: double.infinity,
@@ -47,7 +49,9 @@ class _TimerMainState extends State<TimerMain> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(widget.title, ),
+                        Text(
+                          widget.title,
+                        ),
                         Text("P${widget.status}")
                       ],
                     ),
@@ -59,6 +63,7 @@ class _TimerMainState extends State<TimerMain> {
                 width: double.infinity,
                 child: Center(
                   child: TimerCanvas(
+                    isPaused: isDPaused,
                     isStopped: isDStopped,
                     hours: int.parse(widget.hours),
                     minutes: int.parse(widget.minutes),
@@ -75,11 +80,11 @@ class _TimerMainState extends State<TimerMain> {
                 child: TextButton(
                   onPressed: () {
                     setState(() {
-                      if (isDStopped == true) {
-                        isDStopped = false;
+                      if (isDPaused == true) {
+                        isDPaused = false;
                       }
-                      if (isDStopped == false) {
-                        isDStopped = true;
+                      if (isDPaused == false) {
+                        isDPaused = true;
                       }
                     });
                   },
@@ -134,10 +139,12 @@ class TimerCanvas extends StatefulWidget {
     required this.hours,
     required this.minutes,
     required this.isStopped,
+    required this.isPaused,
   });
   bool isStopped;
   final int hours;
   final int minutes;
+  final bool isPaused;
 
   @override
   State<TimerCanvas> createState() => _TimerCanvasState();
@@ -148,6 +155,8 @@ class _TimerCanvasState extends State<TimerCanvas> {
 
   ///test
   Duration duration = const Duration();
+
+  bool startAgain = false;
 
   @override
   void initState() {
@@ -174,6 +183,12 @@ class _TimerCanvasState extends State<TimerCanvas> {
       talker.log("miss");
     }
     // talker.log("timeLeacksCheck log point, ${widget.isStopped}");
+    if (widget.isPaused == false && startAgain == true) {
+      startTimer();
+      setState(() {
+        startAgain = false;
+      });
+    }
   }
 
   void durationInit() {
@@ -190,6 +205,12 @@ class _TimerCanvasState extends State<TimerCanvas> {
       timer = Timer.periodic(const Duration(seconds: 1), (_) {
         removeTime();
         timeLeaksCheck();
+        if (widget.isPaused == true) {
+          timer?.cancel();
+          setState(() {
+            startAgain = true;
+          });
+        }
       });
       talker.log("timer start point");
     }
