@@ -5,7 +5,9 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:time_manage/custom_widgets/homepgListItem.dart';
 
 class HomePg extends StatefulWidget {
-  const HomePg({super.key, });
+  const HomePg({
+    super.key,
+  });
 
   @override
   State<HomePg> createState() => _HomePg();
@@ -69,9 +71,6 @@ class _HomePg extends State<HomePg> {
   bool homepgDialogMinutesFieldFilled = false;
   final talker = TalkerFlutter.init();
 
-  ///test
-  String pinCodeInformation = "";
-
   @override
   Widget build(BuildContext context) {
     // takeBoxData();
@@ -83,7 +82,7 @@ class _HomePg extends State<HomePg> {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.amber,
+        indicatorColor: Colors.grey,
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
@@ -174,6 +173,18 @@ class _HomePg extends State<HomePg> {
                                       height: 50,
                                       child: TextButton(
                                           onPressed: () async {
+                                            if (hours.text == "") {
+                                              setState(() {
+                                                hours.text = "0";
+                                              });
+                                              talker.log("hours space convert to 0");
+                                            }
+                                            if (minutes.text == "") {
+                                              setState(() {
+                                                minutes.text = "0";
+                                              });
+                                              talker.log("minutes space convert to 0");
+                                            }
                                             if (hours.text == "0" &&
                                                 minutes.text == "") {
                                               Fluttertoast.showToast(
@@ -184,6 +195,7 @@ class _HomePg extends State<HomePg> {
                                                 homepgDialogMinutesFieldFilled =
                                                     false;
                                               });
+                                              talker.log("minutes space convert to 0");
                                             }
                                             if (title.text == "") {
                                               Fluttertoast.showToast(
@@ -242,23 +254,12 @@ class _HomePg extends State<HomePg> {
                                               });
                                               talker.log(minutes.text);
                                             }
-
                                             if (homepgDialogHoursFieldFilled ==
                                                     true &&
                                                 homepgDialogMinutesFieldFilled ==
                                                     true &&
                                                 homepgDialogTitleFieldFilled ==
                                                     true) {
-                                              if (hours.text == "") {
-                                                setState(() {
-                                                  hours.text = "0";
-                                                });
-                                              }
-                                              if (minutes.text == "") {
-                                                setState(() {
-                                                  minutes.text = "0";
-                                                });
-                                              }
                                               homepgDialogMinutesFieldFilled =
                                                   false;
                                               homepgDialogTitleFieldFilled =
@@ -266,8 +267,9 @@ class _HomePg extends State<HomePg> {
                                               titlesCount.add(title.text);
                                               hoursCount.add(hours.text);
                                               minutesCount.add(minutes.text);
-                                              indexCount.add((
-                                                  (minutesCount.length) - 1).toString());
+                                              indexCount.add(
+                                                  ((minutesCount.length) - 1)
+                                                      .toString());
                                               statusesCount.add("0");
                                               title.text = "";
                                               hours.text = "";

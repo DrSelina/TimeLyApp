@@ -28,6 +28,7 @@ class _TimerPageState extends State<TimerPage> {
   void initState() {
     super.initState();
     durationInit();
+    talker.log(duration.inSeconds);
     talker.log("timer initialized");
   }
 
@@ -39,10 +40,14 @@ class _TimerPageState extends State<TimerPage> {
     talker.log("timer start point");
   }
 
-  void removeTime() {}
+  void removeTime() {
+    setState(() {
+      final seconds = duration.inSeconds - 1;
+      duration = Duration(seconds: seconds);
+    });
+  }
 
   void isEnded() {
-    //TODO:make this
     if (duration.inSeconds == 0) {
       timer?.cancel();
       Navigator.of(context).pushAndRemoveUntil(
@@ -73,10 +78,12 @@ class _TimerPageState extends State<TimerPage> {
   @override
   Widget build(BuildContext context) {
     int durSecondsEntry = duration.inSeconds;
-    int durMinutes = duration.inMinutes - duration.inHours;
-    int durHours = duration.inHours;
+    int durHours = durSecondsEntry ~/ 3600;
+    int durMinutes = ((durSecondsEntry ~/ 60) - durHours * 60);
     int durSeconds =
         durSecondsEntry - (((durHours * 60) * 60) + (durMinutes * 60));
+    talker.log(
+        "durSecondsEntry = $durSecondsEntry/durMinutes = $durMinutes/durHours = $durHours/durSeconds = $durSeconds");
     return Material(
       child: Center(
         child: Padding(
@@ -115,26 +122,32 @@ class _TimerPageState extends State<TimerPage> {
                 height: 80,
                 child: Center(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       isStarted
-                          ? Container(
-                              width: 80,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Colors.grey,
-                              ),
-                              child: TextButton(
-                                onPressed: () {
-                                  timer?.cancel();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePg(),
-                                    ),
-                                    (Route<dynamic> route) => false,
-                                  );
-                                },
-                                child: Text("stop"),
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 40),
+                              child: Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Colors.grey,
+                                ),
+                                child: TextButton(
+                                  onPressed: () {
+                                    timer?.cancel();
+                                    setState(() {
+                                      isStarted = false;
+                                    });
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                        builder: (context) => HomePg(),
+                                      ),
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  },
+                                  child: Text("stop"),
+                                ),
                               ),
                             )
                           : SizedBox(
@@ -149,17 +162,18 @@ class _TimerPageState extends State<TimerPage> {
                         child: TextButton(
                           onPressed: () {
                             if (isStarted == true) {
-                              if (isPaused = false) {
+                              if (isPaused == false) {
                                 setState(() {
                                   isPaused = true;
                                 });
                                 timer?.cancel();
-                              }
-                              if (isPaused = true) {
+                                talker.log("timer paused");
+                              } else {
                                 setState(() {
                                   isPaused = false;
                                 });
                                 startTimer();
+                                talker.log("timer resumed");
                               }
                             }
                             if (isStarted == false) {
@@ -167,11 +181,15 @@ class _TimerPageState extends State<TimerPage> {
                               setState(() {
                                 isStarted = true;
                               });
+                              talker.log("timer started");
                             }
                           },
-                          child: Text(isStarted
-                              ? (isPaused ? "resume" : "pause")
-                              : "start"),
+                          child: Text(
+                            isStarted
+                                ? (isPaused ? "resume" : "pause")
+                                : "start",
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         ),
                       ),
                     ],
