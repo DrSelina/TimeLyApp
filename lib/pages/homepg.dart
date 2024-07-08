@@ -103,21 +103,23 @@ class _HomePg extends State<HomePg> {
 
   int currentPageIndex = 0;
   int tilesIndex = 0;
+  TimeOfDay selectedTime = TimeOfDay.now();
   List<String> titlesCount = [];
   List<String> hoursCount = [];
   List<String> minutesCount = [];
   List<String> indexesCount = [];
   List<String> statusesCount = [];
-  List<DateTime> timesActivationCount = [];
+  List<TimeOfDay> timesActivationCount = [];
   TextEditingController title = TextEditingController();
   TextEditingController hours = TextEditingController();
   TextEditingController minutes = TextEditingController();
   TextEditingController hoursActivation = TextEditingController();
   TextEditingController minutesActivation = TextEditingController();
+  TextEditingController periodActivation = TextEditingController();
   bool homepgDialogTitleFieldFilled = false;
   bool homepgDialogHoursFieldFilled = true;
   bool homepgDialogMinutesFieldFilled = false;
-  bool isDailyCheckBoxValue = false;
+  bool isDailyCheckBoxValue = true;
 
   final talker = TalkerFlutter.init();
 
@@ -258,10 +260,10 @@ class _HomePg extends State<HomePg> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
-                                        width: 80,
+                                        width: 60,
                                         child: TextFormField(
+                                          readOnly: true,
                                           decoration: const InputDecoration(
-                                            hintText: "Hours",
                                             border: OutlineInputBorder(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(15),
@@ -269,12 +271,6 @@ class _HomePg extends State<HomePg> {
                                             ),
                                           ),
                                           controller: hoursActivation,
-                                          keyboardType: const TextInputType
-                                              .numberWithOptions(),
-                                          inputFormatters: <TextInputFormatter>[
-                                            FilteringTextInputFormatter
-                                                .digitsOnly
-                                          ],
                                         ),
                                       ),
                                       const SizedBox(
@@ -291,10 +287,10 @@ class _HomePg extends State<HomePg> {
                                         width: 10,
                                       ),
                                       Container(
-                                        width: 80,
+                                        width: 60,
                                         child: TextFormField(
+                                          readOnly: true,
                                           decoration: const InputDecoration(
-                                            hintText: "Mins",
                                             border: OutlineInputBorder(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(15),
@@ -302,14 +298,57 @@ class _HomePg extends State<HomePg> {
                                             ),
                                           ),
                                           controller: minutesActivation,
-                                          keyboardType: TextInputType.datetime,
-                                          inputFormatters: <TextInputFormatter>[
-                                            FilteringTextInputFormatter
-                                                .digitsOnly
-                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Container(
+                                        width: 60,
+                                        child: TextFormField(
+                                          readOnly: true,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15),
+                                              ),
+                                            ),
+                                          ),
+                                          controller: periodActivation,
                                         ),
                                       ),
                                     ],
+                                  ),
+                                  Container(
+                                    child: TextButton(
+                                      onPressed: () async {
+                                        final TimeOfDay? timeOfDay =
+                                            await showTimePicker(
+                                          context: context,
+                                          initialTime: selectedTime,
+                                          initialEntryMode:
+                                              TimePickerEntryMode.dial,
+                                        );
+                                        if (timeOfDay != null) {
+                                          setState(() {
+                                            selectedTime = timeOfDay;
+                                            hoursActivation.text =
+                                                timeOfDay.hour.toString();
+                                            minutesActivation.text =
+                                                timeOfDay.minute.toString();
+                                            final period =
+                                                timeOfDay.period.toString();
+                                            if (period == "DayPeriod.am") {
+                                              periodActivation.text = "am";
+                                            }
+                                            if (period == "DayPeriod.pm") {
+                                              periodActivation.text = "pm";
+                                            }
+                                          });
+                                        }
+                                      },
+                                      child: Text("set time"),
+                                    ),
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
