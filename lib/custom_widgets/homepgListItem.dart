@@ -9,7 +9,9 @@ class HomePgListItem extends StatelessWidget {
     required this.hours,
     required this.minutes,
     this.function,
-    required this.status, required this.box,
+    required this.status,
+    required this.box,
+    required this.timeOfDay,
   });
   final String title;
   final String hours;
@@ -17,9 +19,29 @@ class HomePgListItem extends StatelessWidget {
   final VoidCallback? function;
   final String status;
   final Box<dynamic> box;
+  final TimeOfDay timeOfDay;
 
   @override
   Widget build(BuildContext context) {
+    // void timeCheck() {
+    //   if (TimeOfDay.now() == timeOfDay) {
+    //     Navigator.pushAndRemoveUntil(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) => TimerPage(
+    //           box: box,
+    //           title: title,
+    //           hours: hours,
+    //           minutes: minutes,
+    //           status: status,
+    //         ),
+    //       ),
+    //       (Route<dynamic> route) => false,
+    //     );
+    //   }
+    // }
+
+    // timeCheck();
     return Card(
       child: Container(
         height: 100,
@@ -51,6 +73,7 @@ class HomePgListItem extends StatelessWidget {
                       Text("$hours:$minutes"),
                       IconButton(
                         onPressed: () {
+                          talker.log(timeOfDay);
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                               builder: (context) => TimerPage(

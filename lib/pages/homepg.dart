@@ -80,10 +80,32 @@ class _HomePg extends State<HomePg> {
       talker.log("statuses not initiated");
     }
     try {
-      final timesActivation = widget.box.get("timesActivation");
+      final timesActivation = widget.box.get("timesActivationHours");
       if (timesActivation != null) {
         setState(() {
-          timesActivationCount = timesActivation;
+          timesActivationCountHours = timesActivation;
+        });
+        talker.log(widget.box.get("timesActivation"));
+      }
+    } catch (error) {
+      talker.log("timesActivation not initiated");
+    }
+    try {
+      final timesActivation = widget.box.get("timesActivationMinutes");
+      if (timesActivation != null) {
+        setState(() {
+          timesActivationCountMinutes = timesActivation;
+        });
+        talker.log(widget.box.get("timesActivation"));
+      }
+    } catch (error) {
+      talker.log("timesActivation not initiated");
+    }
+    try {
+      final timesActivation = widget.box.get("timesActivationPeriod");
+      if (timesActivation != null) {
+        setState(() {
+          timesActivationCountPeriod = timesActivation;
         });
         talker.log(widget.box.get("timesActivation"));
       }
@@ -98,7 +120,9 @@ class _HomePg extends State<HomePg> {
     widget.box.put("minutes", minutesCount);
     widget.box.put("indexes", indexesCount);
     widget.box.put("statuses", statusesCount);
-    widget.box.put("timesActivation", timesActivationCount);
+    widget.box.put("timesActivationHours", timesActivationCountMinutes);
+    widget.box.put("timesActivationMinutes", timesActivationCountHours);
+    widget.box.put("timesActivationPeriod", timesActivationCountPeriod);
   }
 
   int currentPageIndex = 0;
@@ -109,7 +133,9 @@ class _HomePg extends State<HomePg> {
   List<String> minutesCount = [];
   List<String> indexesCount = [];
   List<String> statusesCount = [];
-  List<TimeOfDay> timesActivationCount = [];
+  List<int> timesActivationCountHours = [];
+  List<int> timesActivationCountMinutes = [];
+  List<String> timesActivationCountPeriod = [];
   TextEditingController title = TextEditingController();
   TextEditingController hours = TextEditingController();
   TextEditingController minutes = TextEditingController();
@@ -164,6 +190,14 @@ class _HomePg extends State<HomePg> {
                 itemCount: titlesCount.length,
                 itemBuilder: (BuildContext context, int index) {
                   return HomePgListItem(
+                    timeOfDay: timesActivationCountHours != []
+                        ? TimeOfDay(
+                            hour: timesActivationCountPeriod[index] == "pm"
+                                ? (timesActivationCountHours[index] + 12)
+                                : timesActivationCountHours[index],
+                            minute: timesActivationCountMinutes[index],
+                          )
+                        : selectedTime,
                     box: widget.box,
                     title: titlesCount[index],
                     hours: hoursCount[index],
@@ -477,6 +511,13 @@ class _HomePg extends State<HomePg> {
                                                   ((minutesCount.length) - 1)
                                                       .toString());
                                               statusesCount.add("0");
+                                              timesActivationCountMinutes
+                                                  .add(selectedTime.hour);
+                                              timesActivationCountHours
+                                                  .add(selectedTime.minute);
+                                              timesActivationCountPeriod.add(
+                                                  selectedTime.period
+                                                      .toString());
                                               title.text = "";
                                               hours.text = "";
                                               minutes.text = "";
