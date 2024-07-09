@@ -26,6 +26,7 @@ class HomePgListItem extends StatefulWidget {
 }
 
 class _HomePgListItemState extends State<HomePgListItem> {
+  ///TODO: make checker constantly checkable
   void timeCheck() {
       if (TimeOfDay.now() == widget.timeOfDay) {
         // Navigator.pushAndRemoveUntil(
