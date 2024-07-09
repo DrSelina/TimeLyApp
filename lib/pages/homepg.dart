@@ -492,7 +492,7 @@ class _HomePg extends State<HomePg> {
                                                 minutes.text =
                                                     "0${minutes.text}";
                                               });
-                                              talker.log(minutes.text);
+                                              //talker.log(minutes.text);
                                             }
                                             if (homepgDialogHoursFieldFilled ==
                                                     true &&
@@ -511,9 +511,9 @@ class _HomePg extends State<HomePg> {
                                                   ((minutesCount.length) - 1)
                                                       .toString());
                                               statusesCount.add("0");
-                                              timesActivationCountMinutes
-                                                  .add(selectedTime.hour);
                                               timesActivationCountHours
+                                                  .add(selectedTime.hour);
+                                              timesActivationCountMinutes
                                                   .add(selectedTime.minute);
                                               timesActivationCountPeriod.add(
                                                   selectedTime.period
@@ -521,12 +521,16 @@ class _HomePg extends State<HomePg> {
                                               title.text = "";
                                               hours.text = "";
                                               minutes.text = "";
+                                              minutesActivation.text = "";
+                                              hoursActivation.text = "";
+                                              periodActivation.text = "";
                                               HivePutAction();
-                                              talker.log(
-                                                  ((widget.box.get("titles")) !=
-                                                          null)
-                                                      ? "succ"
-                                                      : "fail");
+                                              // talker.log(
+                                              //     ((widget.box.get("titles")) !=
+                                              //             null)
+                                              //         ? "succ"
+                                              //         : "fail");
+                                              talker.log("$selectedTime");
                                               Navigator.pop(context);
                                             }
                                           },

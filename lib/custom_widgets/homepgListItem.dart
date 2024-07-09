@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:time_manage/pages/timerNormalized.dart';
 
-class HomePgListItem extends StatelessWidget {
+class HomePgListItem extends StatefulWidget {
   const HomePgListItem({
     super.key,
     required this.title,
@@ -22,26 +22,34 @@ class HomePgListItem extends StatelessWidget {
   final TimeOfDay timeOfDay;
 
   @override
-  Widget build(BuildContext context) {
-    // void timeCheck() {
-    //   if (TimeOfDay.now() == timeOfDay) {
-    //     Navigator.pushAndRemoveUntil(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) => TimerPage(
-    //           box: box,
-    //           title: title,
-    //           hours: hours,
-    //           minutes: minutes,
-    //           status: status,
-    //         ),
-    //       ),
-    //       (Route<dynamic> route) => false,
-    //     );
-    //   }
-    // }
+  State<HomePgListItem> createState() => _HomePgListItemState();
+}
 
-    // timeCheck();
+class _HomePgListItemState extends State<HomePgListItem> {
+  void timeCheck() {
+      if (TimeOfDay.now() == widget.timeOfDay) {
+        // Navigator.pushAndRemoveUntil(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => TimerPage(
+        //       box: box,
+        //       title: title,
+        //       hours: hours,
+        //       minutes: minutes,
+        //       status: status,
+        //     ),
+        //   ),
+        //   (Route<dynamic> route) => false,
+        // );
+        talker.log("time check - inner class");
+      }
+      talker.log("time check - TOD = ${widget.timeOfDay}, ${TimeOfDay.now()}");
+    }
+
+  @override
+  Widget build(BuildContext context) {
+    timeCheck();
+
     return Card(
       child: Container(
         height: 100,
@@ -56,7 +64,7 @@ class HomePgListItem extends StatelessWidget {
                 child: Container(
                   height: 80,
                   width: 90,
-                  child: Center(child: Text(title)),
+                  child: Center(child: Text(widget.title)),
                 ),
               ),
               Padding(
@@ -66,22 +74,22 @@ class HomePgListItem extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("P$status"),
+                      Text("P${widget.status}"),
                       SizedBox(
                         width: 30,
                       ),
-                      Text("$hours:$minutes"),
+                      Text("${widget.hours}:${widget.minutes}"),
                       IconButton(
                         onPressed: () {
-                          talker.log(timeOfDay);
+                          talker.log(widget.timeOfDay);
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                               builder: (context) => TimerPage(
-                                box: box,
-                                title: title,
-                                hours: hours,
-                                minutes: minutes,
-                                status: status,
+                                box: widget.box,
+                                title: widget.title,
+                                hours: widget.hours,
+                                minutes: widget.minutes,
+                                status: widget.status,
                               ),
                             ),
                             (Route<dynamic> route) => false,
